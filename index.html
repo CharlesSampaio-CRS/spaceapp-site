@@ -149,16 +149,20 @@
     </p>
 
     <div class="download-buttons">
-      <a href="https://github.com/CharlesSampaio-CRS/spaceapp/releases/latest/download/SpaceApp-Setup.exe" class="btn btn-primary">
+      <a href="https://github.com/CharlesSampaio-CRS/spaceapp/releases/download/v1.0.188/SpaceApp.Setup.1.0.188.exe"
+         class="btn btn-primary"
+         download>
         <i class="fa-brands fa-windows"></i> Windows
       </a>
-      <a href="https://github.com/CharlesSampaio-CRS/spaceapp/releases/latest/download/SpaceApp.dmg" class="btn btn-dark">
-        <i class="fa-brands fa-apple"></i> macOS
+      <a class="btn btn-dark disabled" style="pointer-events: none; opacity: 0.6;">
+        <i class="fa-brands fa-apple"></i> macOS (Em breve)
       </a>
-      <a href="https://github.com/CharlesSampaio-CRS/spaceapp/releases/latest/download/SpaceApp.AppImage" class="btn btn-success">
+      <a href="https://github.com/CharlesSampaio-CRS/spaceapp/releases/download/v1.0.188/spaceapp_1.0.188_amd64.deb"
+         class="btn btn-success"
+         download>
         <i class="fa-brands fa-linux"></i> Linux
       </a>
-    </div>
+    </div>  
 
     <div class="donation-section">
       <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#donationModal">
@@ -204,6 +208,20 @@
     </div>
   </div>
   <script>
+
+document.querySelectorAll('.download-buttons a').forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      const url = this.href;
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = ''; // Não funciona em domínios externos, mas previne navegação
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+  });
+
     function copyPixKey() {
       const input = document.getElementById("pixKey");
       input.select();
