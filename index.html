@@ -240,6 +240,20 @@
       </div>
     </div>
     
+    <!-- Modal de Imagem Ampliada -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark text-white text-center">
+      <div class="modal-header border-0">
+        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <img src="" id="modalImage" class="img-fluid rounded" alt="Imagem ampliada">
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <div class="footer">
       &copy; 2025 SpaceHub. Todos os direitos reservados.
@@ -247,16 +261,32 @@
   </div>
 
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Clique nas imagens para abrir modal
+      document.querySelectorAll(".screenshot-section img").forEach(img => {
+        img.addEventListener("click", () => {
+          const modalImg = document.getElementById("modalImage");
+          modalImg.src = img.src;
+          new bootstrap.Modal(document.getElementById('imageModal')).show();
+        });
+      });
+  
+      loadLatestReleaseLinks();
+    });
+  
     async function loadLatestReleaseLinks() {
       try {
         const response = await fetch("https://api.github.com/repos/CharlesSampaio-CRS/spaceapp/releases/latest");
         const data = await response.json();
-        const assets = data.assets;
-
-        const windowsAsset = assets.find(asset => asset.name.endsWith('.exe'));
-        const linuxDebAsset = assets.find(asset => asset.name.endsWith('.deb'));
-        const linuxAppImageAsset = assets.find(asset => asset.name.endsWith('.AppImage'));
-
+  
+        if (!data || !data.assets) {
+          throw new Error("Resposta inesperada da API");
+        }
+  
+        const windowsAsset = data.assets.find(asset => asset.name.endsWith('.exe'));
+        const linuxDebAsset = data.assets.find(asset => asset.name.endsWith('.deb'));
+        const linuxAppImageAsset = data.assets.find(asset => asset.name.endsWith('.AppImage'));
+  
         // Windows
         if (windowsAsset) {
           const winBtn = document.getElementById('btn-windows');
@@ -265,40 +295,42 @@
           winBtn.removeAttribute('disabled');
           winBtn.style.pointerEvents = 'auto';
         }
-
+  
         // Linux
         const linuxDropdown = document.getElementById('linuxDropdown');
         const linuxDebLink = document.getElementById('linux-deb');
         const linuxAppImageLink = document.getElementById('linux-appimage');
-
+  
         if (linuxDebAsset || linuxAppImageAsset) {
           linuxDropdown.removeAttribute('disabled');
         }
-
+  
         if (linuxDebAsset) {
           linuxDebLink.href = linuxDebAsset.browser_download_url;
           linuxDebLink.classList.remove('disabled');
         }
-
+  
         if (linuxAppImageAsset) {
           linuxAppImageLink.href = linuxAppImageAsset.browser_download_url;
           linuxAppImageLink.classList.remove('disabled');
         }
-
+  
       } catch (err) {
         console.error("Erro ao carregar release mais recente:", err);
       }
     }
-
-    function copyPixKey() {
+  
+    async function copyPixKey() {
       const input = document.getElementById("pixKey");
-      input.select();
-      input.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      alert("Chave Pix copiada com sucesso!");
+      try {
+        await navigator.clipboard.writeText(input.value);
+        alert("Chave Pix copiada com sucesso!");
+      } catch (err) {
+        console.error("Erro ao copiar chave Pix:", err);
+        alert("Não foi possível copiar a chave Pix.");
+      }
     }
-
-    document.addEventListener("DOMContentLoaded", loadLatestReleaseLinks);
   </script>
+  
 </body>
 </html>
