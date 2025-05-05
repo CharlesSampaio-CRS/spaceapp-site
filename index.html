@@ -147,15 +147,23 @@
     </p>
 
     <div class="download-buttons">
-      <a class="btn btn-primary" id="btn-windows" style="pointer-events: none;">
+      <a class="btn btn-primary" id="btn-windows" href="#" disabled>
         <i class="fa-brands fa-windows"></i> Windows
       </a>
+
       <a class="btn btn-dark disabled" style="pointer-events: none; opacity: 0.6;">
         <i class="fa-brands fa-apple"></i> macOS (Em breve)
       </a>
-      <a class="btn btn-success" id="btn-linux" style="pointer-events: none;">
-        <i class="fa-brands fa-linux"></i> Linux
-      </a>
+
+      <div class="dropdown d-inline-block">
+        <button class="btn btn-success dropdown-toggle" type="button" id="linuxDropdown" data-bs-toggle="dropdown" aria-expanded="false" disabled>
+          <i class="fa-brands fa-linux"></i> Linux
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="linuxDropdown" id="linuxDropdownMenu">
+          <li><a class="dropdown-item disabled" id="linux-deb" href="#">.deb (Instalador)</a></li>
+          <li><a class="dropdown-item disabled" id="linux-appimage" href="#">AppImage (Portátil)</a></li>
+        </ul>
+      </div>
     </div>  
 
     <div class="donation-section">
@@ -207,21 +215,37 @@
         const assets = data.assets;
 
         const windowsAsset = assets.find(asset => asset.name.endsWith('.exe'));
-        const linuxAsset = assets.find(asset => asset.name.endsWith('.deb'));
+        const linuxDebAsset = assets.find(asset => asset.name.endsWith('.deb'));
+        const linuxAppImageAsset = assets.find(asset => asset.name.endsWith('.AppImage'));
 
+        // Windows
         if (windowsAsset) {
           const winBtn = document.getElementById('btn-windows');
           winBtn.href = windowsAsset.browser_download_url;
           winBtn.classList.remove('disabled');
+          winBtn.removeAttribute('disabled');
           winBtn.style.pointerEvents = 'auto';
         }
 
-        if (linuxAsset) {
-          const linuxBtn = document.getElementById('btn-linux');
-          linuxBtn.href = linuxAsset.browser_download_url;
-          linuxBtn.classList.remove('disabled');
-          linuxBtn.style.pointerEvents = 'auto';
+        // Linux
+        const linuxDropdown = document.getElementById('linuxDropdown');
+        const linuxDebLink = document.getElementById('linux-deb');
+        const linuxAppImageLink = document.getElementById('linux-appimage');
+
+        if (linuxDebAsset || linuxAppImageAsset) {
+          linuxDropdown.removeAttribute('disabled');
         }
+
+        if (linuxDebAsset) {
+          linuxDebLink.href = linuxDebAsset.browser_download_url;
+          linuxDebLink.classList.remove('disabled');
+        }
+
+        if (linuxAppImageAsset) {
+          linuxAppImageLink.href = linuxAppImageAsset.browser_download_url;
+          linuxAppImageLink.classList.remove('disabled');
+        }
+
       } catch (err) {
         console.error("Erro ao carregar release mais recente:", err);
       }
