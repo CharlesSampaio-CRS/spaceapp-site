@@ -128,7 +128,7 @@
 <body>
   <div class="container">
     <div class="logo">
-      <img src="./assets/spaceapp.png" alt="SpaceApp Logo">
+      <img src="../../assets/spaceapp.png" alt="SpaceApp Logo">
     </div>
 
     <div class="social-icons">
@@ -177,7 +177,6 @@
       </p>
     </div>
 
-    <!-- Modal Pix -->
     <div class="modal fade" id="donationModal" tabindex="-1" aria-labelledby="donationModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -187,7 +186,7 @@
           </div>
           <div class="modal-body">
             <h4>Escaneie o QR Code abaixo para fazer sua doação:</h4>
-            <img src="./assets/pix.jpeg" alt="QR Code Pix">
+            <img src="../../assets/pix.jpeg" alt="QR Code Pix">
             <p class="mt-3">Ou copie a chave Pix abaixo:</p>
             <div class="input-group mb-3">
               <input type="text" class="form-control" id="pixKey" value="ccharlesroberto@gmail.com" readonly>
@@ -202,7 +201,6 @@
       </div>
     </div>
 
-    <!-- Galeria de imagens -->
     <div class="screenshot-section mt-5">
       <h2 class="mb-4">📸 Veja o SpaceHub em ação</h2>
       <div class="row justify-content-center g-4">
@@ -221,7 +219,6 @@
       </div>
     </div>
 
-    <!-- Modal imagem -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content bg-dark text-white text-center">
@@ -280,18 +277,24 @@
 
         [linuxDebLink, linuxAppImageLink].forEach(link => link.classList.remove('disabled'));
       } catch (err) {
-        console.error("Erro ao carregar release mais recente:", err);
+        console.error("Erro ao carregar release: ", err);
       }
     }
 
-    async function copyPixKey() {
-      const input = document.getElementById("pixKey");
+    function copyPixKey() {
+      const pixInput = document.getElementById("pixKey");
+      pixInput.select();
+      pixInput.setSelectionRange(0, 99999);  // Para dispositivos móveis
+
       try {
-        await navigator.clipboard.writeText(input.value);
-        alert("Chave Pix copiada com sucesso!");
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(pixInput.value).then(() => alert("Chave Pix copiada!"));
+        } else {
+          document.execCommand("copy");
+          alert("Chave Pix copiada!");
+        }
       } catch (err) {
-        console.error("Erro ao copiar chave Pix:", err);
-        alert("Não foi possível copiar a chave Pix.");
+        alert("Erro ao copiar a chave Pix.");
       }
     }
   </script>
